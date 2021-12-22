@@ -10,7 +10,7 @@ from Crypto.Random import get_random_bytes
 import os
 
 # MAIN-FUNCTIONS 
-def encrypt_file(read_file: str, write_file:str, password: str):
+def encrypt_file(read_file: str, password: str):
     """Reads read_file, encrypts data, and writes to write_file."""
 
     # read text from file
@@ -22,13 +22,9 @@ def encrypt_file(read_file: str, write_file:str, password: str):
     key, salt = _get_private_key(password)
     encrypted_bytes, iv = _encrypt_bytes(text.encode('UTF-8'), key)
 
-    # write encrypted bytes to write file
-    with open(write_file, 'wb') as wfile:
-        wfile.write(salt) # 32 bytes
-        wfile.write(iv) # 16 bytes
-        wfile.write(encrypted_bytes) 
+    return salt + iv + encrypted_bytes
 
-def decrypt_file(read_file: str, write_file:str, password: str):
+def decrypt_file(read_file: str, password: str):
     """Reads read_file, decryptes bytes, and writes as text to write_file."""
 
     # read bytes from file
@@ -44,10 +40,9 @@ def decrypt_file(read_file: str, write_file:str, password: str):
     # decrypt encrypted bytes
     key, salt = _get_private_key(password, salt)
     text = _decrypt_bytes(padded_bytes, key, iv).decode('UTF-8')
+    
+    return text
 
-    # write text to write file
-    with open(write_file, 'w') as wfile:
-        wfile.write(text)
 
 def new_file_ext(file_path: str, new_ext: str):
     """Returns path for file with new extention"""
