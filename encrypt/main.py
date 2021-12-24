@@ -3,8 +3,7 @@
 # FILE: Main project file. Parses arguments from command line.
 
 # IMPORTS
-from os import write
-from click.core import V
+from click.decorators import confirmation_option
 from encrypt.utils import *
 import click 
 
@@ -15,6 +14,7 @@ import click
 @click.argument('file_path', type=click.Path(exists=True))
 def encrypt(file_path, password, write_path, mode=None):
     """Encrypts file with password protected AES-256."""
+
     if(not write_path):
         write_path = new_file_ext(file_path, ".enc")
         
@@ -28,13 +28,14 @@ def encrypt(file_path, password, write_path, mode=None):
         os.remove(file_path)
 
 @click.command()
-@click.password_option()
+@click.password_option(confirmation_prompt=False)
 @click.option('--w','write_path',type=click.Path(exists=True), help="path to decrypted file")
 @click.option('-l','mode', flag_value='leave', help="leave encrypted file")
 @click.option('-v','mode', flag_value='view', help="output decrypted content - doesn't write to file")
 @click.argument('file_path', type=click.Path(exists=True))
 def decrypt(file_path, password, write_path, mode=None):
     """Decrypt password protected AES-256 encrypted file"""
+
     # create write_path if not given
     if(not write_path):
         write_path = new_file_ext(file_path, ".txt")

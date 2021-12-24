@@ -3,7 +3,7 @@ from pathlib import Path
 
 setup(
     name='encrypt',
-    version='0.1',
+    version='1.0',
     description="CLI for Encrypting & Decrypting Files",
     long_description= (Path(__file__).parent / "README.md").read_text(),
     long_description_content_type="text/markdown",
