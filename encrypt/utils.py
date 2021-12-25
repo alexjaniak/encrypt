@@ -14,13 +14,16 @@ def encrypt_file(read_file: str, password: str):
     """Reads read_file, encrypts data, and writes to write_file."""
 
     # read text from file
-    text = ""
-    with open(read_file, 'r') as rfile:
-        for line in rfile: text += line 
+    total = b''
+    with open(read_file, 'rb') as rfile:
+        _bytes = rfile.read(16)
+        while(_bytes):
+            total += _bytes
+            _bytes = rfile.read(16)
 
     # encrypt text
     key, salt = _get_private_key(password)
-    encrypted_bytes, iv = _encrypt_bytes(text.encode('UTF-8'), key)
+    encrypted_bytes, iv = _encrypt_bytes(total, key)
 
     return salt + iv + encrypted_bytes
 
